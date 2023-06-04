@@ -27,6 +27,8 @@ model File {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   path       String
+  size       Int
+  mimetype   String
   owner_id   Int
   owner      User     @relation(fields: [owner_id], references: [id])
 }

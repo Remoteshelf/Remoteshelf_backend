@@ -5,9 +5,10 @@ import { UsersModule } from './users/users.module';
 import { PrismaService } from './prisma/prisma.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
+import { FileModule } from './file/file.module';
 
 @Module({
-  imports: [AuthModule, UsersModule, PrismaModule, ConfigModule],
+  imports: [AuthModule, UsersModule, PrismaModule, ConfigModule, FileModule],
   controllers: [UsersController],
   providers: [PrismaService],
 })
