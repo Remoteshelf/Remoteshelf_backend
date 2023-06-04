@@ -18,10 +18,15 @@ model User {
   password   String
   firstname  String?
   lastname   String?
+  File       File[]
 }
 
 model File {
   id         Int      @unique @default(autoincrement())
   filename   String
   created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  path       String
+  owner_id   Int
+  owner      User     @relation(fields: [owner_id], references: [id])
 }

@@ -41,10 +41,10 @@ export class AuthService {
     const pwd = argon.verify(user.password, dto.password);
     if (!pwd) throw new ForbiddenException('Credentials incorrect!');
     delete user.password;
-    return user;
+    return await this.signToken(user.id, user.email);
   }
 
-  async signToken(
+  private async signToken(
     userId: number,
     email: string,
   ): Promise<{ access_token: string }> {
