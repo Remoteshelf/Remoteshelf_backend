@@ -1,5 +1,8 @@
 import {
   Controller,
+  Delete,
+  Param,
+  ParseIntPipe,
   Post,
   Request,
   UploadedFile,
@@ -19,5 +22,11 @@ export class FileController {
   @UseInterceptors(FileInterceptor('file', multerConfig))
   async upload(@UploadedFile() file: Express.Multer.File, @Request() req) {
     return this.fileService.saveFile(file, req.user.id);
+  }
+
+  @UseGuards(JwtGuard)
+  @Delete('delete/:id')
+  async delete(@Param('id', ParseIntPipe) id: number) {
+    return this.fileService.deleteFile(id);
   }
 }

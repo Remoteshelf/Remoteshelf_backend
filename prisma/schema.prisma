@@ -18,11 +18,12 @@ model User {
   password   String
   firstname  String?
   lastname   String?
-  File       File[]
+  files      File[]
+  folders    Folder[]
 }
 
 model File {
-  id         Int      @unique @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   filename   String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -31,4 +32,22 @@ model File {
   mimetype   String
   owner_id   Int
   owner      User     @relation(fields: [owner_id], references: [id])
+
+  folder    Folder @relation(fields: [folder_id], references: [id], onDelete: Cascade)
+  folder_id Int
+}
+
+model Folder {
+  id         Int      @id @default(autoincrement())
+  name       String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  files      File[]
+
+  child_folders Folder[] @relation("ChildFolders")
+
+  parent_id     Int?
+  parent_folder Folder? @relation("ChildFolders", fields: [parent_id], references: [id], onDelete: Cascade)
+  user          User    @relation(fields: [user_id], references: [id])
+  user_id       Int
 }
