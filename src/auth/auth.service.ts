@@ -20,6 +20,8 @@ export class AuthService {
         data: {
           email: dto.email,
           password: hashed,
+          firstname: dto.firstname,
+          lastname: dto.lastname,
         },
       });
       return this.signToken(user.id, user.email);
