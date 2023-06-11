@@ -5,6 +5,7 @@ import * as argon from 'argon2';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { Prisma } from '@prisma/client';
+import passport from 'passport';
 
 @Injectable()
 export class AuthService {
@@ -40,8 +41,10 @@ export class AuthService {
       where: { email: dto.email },
     });
     if (!user) throw new ForbiddenException('Crerentials incorrect!');
-    const pwd = argon.verify(user.password, dto.password);
-    if (!pwd) throw new ForbiddenException('Credentials incorrect!');
+    const pwd = await argon.verify(user.password, dto.password);
+    if (!pwd) {
+      throw new ForbiddenException('Credentials incorrect!');
+    }
     delete user.password;
     return await this.signToken(user.id, user.email);
   }
