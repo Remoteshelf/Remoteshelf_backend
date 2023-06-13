@@ -25,4 +25,18 @@ export class FolderService {
       return 'Something went wrong!';
     }
   }
+
+  async getRootFilesAndFolders() {
+    try {
+      const rootFiles = await this.prisma.file.findMany({
+        where: { folder_id: null },
+      });
+      const rootFolders = await this.prisma.folder.findMany({
+        where: { parent_id: null },
+      });
+      return { files: rootFiles, folders: rootFolders };
+    } catch (error) {
+      throw error;
+    }
+  }
 }

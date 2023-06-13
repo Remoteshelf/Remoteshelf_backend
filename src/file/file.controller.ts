@@ -7,7 +7,6 @@ import {
   ParseIntPipe,
   Post,
   Query,
-  Req,
   Request,
   UploadedFile,
   UseGuards,
@@ -58,7 +57,6 @@ export class FileController {
   @UseGuards(JwtGuard)
   @Get('/me')
   async getFilesByUserId(@Request() req) {
-    console.log(req);
     return await this.fileService.getFilesByUserId(req.user.id);
   }
 }

@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Param,
   ParseIntPipe,
   Post,
@@ -28,5 +29,11 @@ export class FolderController {
   @Delete('delete/:id')
   deleteFolder(@Param('id', ParseIntPipe) id: number) {
     return this.folderService.deleteFolder(id);
+  }
+
+  @UseGuards(JwtGuard)
+  @Get('/root')
+  getRootFilesAndFolders() {
+    return this.folderService.getRootFilesAndFolders();
   }
 }
