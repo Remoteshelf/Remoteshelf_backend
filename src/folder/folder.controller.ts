@@ -36,4 +36,10 @@ export class FolderController {
   getRootFilesAndFolders() {
     return this.folderService.getRootFilesAndFolders();
   }
+
+  @UseGuards(JwtGuard)
+  @Get('/all/:id')
+  getAllContents(@Param('id', ParseIntPipe) folderId: number) {
+    return this.folderService.getAllContentsByFolderId(folderId);
+  }
 }

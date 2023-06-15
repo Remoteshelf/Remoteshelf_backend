@@ -39,4 +39,17 @@ export class FolderService {
       throw error;
     }
   }
+  async getAllContentsByFolderId(folderId: number) {
+    try {
+      const files = await this.prisma.file.findMany({
+        where: { folder_id: folderId },
+      });
+      const folders = await this.prisma.folder.findMany({
+        where: { parent_id: folderId },
+      });
+      return { files: files, folders: folders };
+    } catch (error) {
+      throw error;
+    }
+  }
 }
