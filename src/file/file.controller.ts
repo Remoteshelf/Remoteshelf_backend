@@ -8,6 +8,7 @@ import {
   Post,
   Query,
   Request,
+  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -17,6 +18,8 @@ import { JwtGuard } from 'src/auth/guard/jwt.guard';
 import { multerConfig } from 'src/config/multer.config';
 import { FileService } from './file.service';
 import { FileDto } from './dto/file.dto';
+import { Response } from 'express';
+import * as path from 'path';
 
 @Controller('file')
 export class FileController {
@@ -58,5 +61,19 @@ export class FileController {
   @Get('/me')
   async getFilesByUserId(@Request() req) {
     return await this.fileService.getFilesByUserId(req.user.id);
+  }
+  @UseGuards(JwtGuard)
+  @Get('/download/:id')
+  async downloadFile(
+    @Param('id', ParseIntPipe) id: number,
+    @Res() res: Response,
+  ) {
+    const file = await this.fileService.getFileById(id);
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename=${file.filename}`,
+    );
+    const filepath = path.join(process.cwd(), file.path);
+    res.sendFile(filepath);
   }
 }
