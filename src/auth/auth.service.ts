@@ -5,7 +5,6 @@ import * as argon from 'argon2';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { Prisma } from '@prisma/client';
-import passport from 'passport';
 
 @Injectable()
 export class AuthService {

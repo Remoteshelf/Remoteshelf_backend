@@ -29,6 +29,16 @@ export class FolderService {
   async getRootFilesAndFolders() {
     try {
       const rootFiles = await this.prisma.file.findMany({
+        include: {
+          access: {
+            select: {
+              access_right: true,
+              user: {
+                select: { firstname: true, lastname: true, email: true },
+              },
+            },
+          },
+        },
         where: { folder_id: null },
       });
       const rootFolders = await this.prisma.folder.findMany({
@@ -42,6 +52,16 @@ export class FolderService {
   async getAllContentsByFolderId(folderId: number) {
     try {
       const files = await this.prisma.file.findMany({
+        include: {
+          access: {
+            select: {
+              access_right: true,
+              user: {
+                select: { firstname: true, lastname: true, email: true },
+              },
+            },
+          },
+        },
         where: { folder_id: folderId },
       });
       const folders = await this.prisma.folder.findMany({

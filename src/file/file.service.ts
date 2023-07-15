@@ -51,6 +51,16 @@ export class FileService {
   async getFileById(id: number) {
     try {
       const file = await this.prisma.file.findUnique({
+        include: {
+          access: {
+            select: {
+              access_right: true,
+              user: {
+                select: { firstname: true, lastname: true, email: true },
+              },
+            },
+          },
+        },
         where: {
           id: id,
         },
@@ -65,6 +75,16 @@ export class FileService {
   async getFilesByFolderId(id: number) {
     try {
       const files = await this.prisma.file.findMany({
+        include: {
+          access: {
+            select: {
+              access_right: true,
+              user: {
+                select: { firstname: true, lastname: true, email: true },
+              },
+            },
+          },
+        },
         where: { folder_id: id },
       });
       return files;
@@ -76,6 +96,16 @@ export class FileService {
   async getFilesByUserId(id: number) {
     try {
       const files = await this.prisma.file.findMany({
+        include: {
+          access: {
+            select: {
+              access_right: true,
+              user: {
+                select: { firstname: true, lastname: true, email: true },
+              },
+            },
+          },
+        },
         where: { owner_id: id },
       });
       return files;

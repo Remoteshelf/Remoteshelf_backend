@@ -20,6 +20,7 @@ model User {
   lastname   String?
   files      File[]
   folders    Folder[]
+  access     Access[]
 }
 
 model File {
@@ -33,8 +34,9 @@ model File {
   owner_id   Int
   owner      User     @relation(fields: [owner_id], references: [id])
 
-  folder    Folder? @relation(fields: [folder_id], references: [id], onDelete: Cascade)
+  folder    Folder?  @relation(fields: [folder_id], references: [id], onDelete: Cascade)
   folder_id Int?
+  access    Access[]
 }
 
 model Folder {
@@ -50,4 +52,18 @@ model Folder {
   parent_folder Folder? @relation("ChildFolders", fields: [parent_id], references: [id], onDelete: Cascade)
   user          User    @relation(fields: [user_id], references: [id])
   user_id       Int
+}
+
+model Access {
+  id Int @id @default(autoincrement())
+
+  file    File @relation(fields: [file_id], references: [id])
+  file_id Int
+
+  access_right String
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  user    User @relation(fields: [user_id], references: [id])
+  user_id Int
 }
