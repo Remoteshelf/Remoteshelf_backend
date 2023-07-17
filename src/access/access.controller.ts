@@ -23,20 +23,21 @@ export class AccessController {
     if (dto.userId == req.user.id) {
       throw new ConflictException('You already own this file');
     }
-    return await this.service.addAccess(dto);
+    return await this.service.addAccess(dto, req.user.id);
   }
   @UseGuards(JwtGuard)
   @Put('/:id')
   async updateAccess(
     @Body() dto: UpdateAccessDto,
     @Param('id', ParseIntPipe) id,
+    @Request() req,
   ) {
-    return await this.service.updateAccess(id, dto);
+    return await this.service.updateAccess(id, dto, req.user.id);
   }
 
   @UseGuards(JwtGuard)
   @Delete('/:id')
-  async deleteAccess(@Param('id', ParseIntPipe) id) {
-    return await this.service.deleteAccess(id);
+  async deleteAccess(@Param('id', ParseIntPipe) id, @Request() req) {
+    return await this.service.deleteAccess(id, req.user.id);
   }
 }
