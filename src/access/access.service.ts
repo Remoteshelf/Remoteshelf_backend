@@ -57,4 +57,15 @@ export class AccessService {
       throw e;
     }
   }
+
+  async deleteAccess(id: number) {
+    try {
+      if (!(await this.prisma.access.findUnique({ where: { id: id } }))) {
+        throw new NotFoundException('Could not delete the access');
+      }
+      await this.prisma.access.delete({ where: { id: id } });
+    } catch (e) {
+      throw e;
+    }
+  }
 }

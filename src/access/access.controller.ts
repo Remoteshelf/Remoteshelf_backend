@@ -2,6 +2,7 @@ import {
   Body,
   ConflictException,
   Controller,
+  Delete,
   Param,
   ParseIntPipe,
   Post,
@@ -31,5 +32,11 @@ export class AccessController {
     @Param('id', ParseIntPipe) id,
   ) {
     return await this.service.updateAccess(id, dto);
+  }
+
+  @UseGuards(JwtGuard)
+  @Delete('/:id')
+  async deleteAccess(@Param('id', ParseIntPipe) id) {
+    return await this.service.deleteAccess(id);
   }
 }
