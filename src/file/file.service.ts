@@ -55,6 +55,7 @@ export class FileService {
           access: {
             select: {
               access_right: true,
+              id: true,
               user: {
                 select: { firstname: true, lastname: true, email: true },
               },
@@ -79,6 +80,7 @@ export class FileService {
           access: {
             select: {
               access_right: true,
+              id: true,
               user: {
                 select: { firstname: true, lastname: true, email: true },
               },
@@ -100,6 +102,7 @@ export class FileService {
           access: {
             select: {
               access_right: true,
+              id: true,
               user: {
                 select: { firstname: true, lastname: true, email: true },
               },

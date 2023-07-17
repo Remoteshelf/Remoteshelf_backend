@@ -15,4 +15,19 @@ export class UsersService {
     delete user.password;
     return user;
   }
+
+  async getAllUsers() {
+    const users = await this.prismaService.user.findMany({
+      select: {
+        email: true,
+        id: true,
+        firstname: true,
+        lastname: true,
+      },
+    });
+    if (!users) {
+      throw new NotFoundException('There was an error fetching user list');
+    }
+    return users;
+  }
 }

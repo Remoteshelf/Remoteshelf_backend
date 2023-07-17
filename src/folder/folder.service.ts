@@ -32,6 +32,7 @@ export class FolderService {
         include: {
           access: {
             select: {
+              id: true,
               access_right: true,
               user: {
                 select: { firstname: true, lastname: true, email: true },
@@ -56,6 +57,7 @@ export class FolderService {
           access: {
             select: {
               access_right: true,
+              id: true,
               user: {
                 select: { firstname: true, lastname: true, email: true },
               },
