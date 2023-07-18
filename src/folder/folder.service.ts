@@ -26,7 +26,7 @@ export class FolderService {
     }
   }
 
-  async getRootFilesAndFolders() {
+  async getRootFilesAndFolders(userId: number) {
     try {
       const rootFiles = await this.prisma.file.findMany({
         include: {
@@ -40,10 +40,10 @@ export class FolderService {
             },
           },
         },
-        where: { folder_id: null },
+        where: { folder_id: null, owner_id: userId },
       });
       const rootFolders = await this.prisma.folder.findMany({
-        where: { parent_id: null },
+        where: { parent_id: null, user_id: userId },
       });
       return { files: rootFiles, folders: rootFolders };
     } catch (error) {

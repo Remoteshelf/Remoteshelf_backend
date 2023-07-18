@@ -33,8 +33,8 @@ export class FolderController {
 
   @UseGuards(JwtGuard)
   @Get('/root')
-  getRootFilesAndFolders() {
-    return this.folderService.getRootFilesAndFolders();
+  getRootFilesAndFolders(@Request() req) {
+    return this.folderService.getRootFilesAndFolders(req.user.id);
   }
 
   @UseGuards(JwtGuard)
