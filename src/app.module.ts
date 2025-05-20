@@ -10,6 +10,7 @@ import { FolderModule } from './folder/folder.module';
 import { AccessController } from './access/access.controller';
 import { AccessService } from './access/access.service';
 import { AccessModule } from './access/access.module';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -20,8 +21,9 @@ import { AccessModule } from './access/access.module';
     FileModule,
     FolderModule,
     AccessModule,
+    SearchModule, // Added SearchModule
   ],
-  controllers: [UsersController, AccessController],
-  providers: [PrismaService, AccessService],
+  controllers: [UsersController, AccessController], // SearchController is in SearchModule
+  providers: [PrismaService, AccessService], // SearchService is in SearchModule
 })
 export class AppModule {}

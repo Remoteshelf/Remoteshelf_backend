@@ -2,9 +2,13 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { AccessDto, UpdateAccessDto } from 'src/access/dto/access.dto';
+import { AccessRole } from 'src/access/enums/enums';
 import { FileService } from 'src/file/file.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UsersService } from 'src/users/users.service';
@@ -34,7 +38,7 @@ export class AccessService {
       if (!access) {
         access = await this.prisma.access.create({
           data: {
-            access_right: dto.accessRight.toString(),
+            role: dto.role,
             file_id: dto.fileId,
             user_id: dto.userId,
           },
@@ -65,7 +69,7 @@ export class AccessService {
           }
           access = await this.prisma.access.update({
             where: { id: id },
-            data: { access_right: dto.accessRight },
+            data: { role: dto.role },
           });
           console.log(access);
           return access;
@@ -95,6 +99,39 @@ export class AccessService {
           await this.prisma.access.delete({ where: { id: id } });
         }
       }
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async getSharedWithMe(currentUserId: number) {
+    try {
+      const accesses = await this.prisma.access.findMany({
+        where: {
+          user_id: currentUserId,
+        },
+        include: {
+          file: {
+            include: {
+              owner: {
+                select: {
+                  id: true,
+                  email: true,
+                  firstname: true,
+                  lastname: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      // Filter out files owned by the current user
+      const sharedByOthers = accesses.filter(
+        (access) => access.file.owner_id !== currentUserId,
+      );
+
+      return sharedByOthers;
     } catch (e) {
       throw e;
     }

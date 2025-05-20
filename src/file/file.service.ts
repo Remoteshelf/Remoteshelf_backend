@@ -1,5 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import { AccessRole } from 'src/access/enums/enums';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { FileDto } from './dto/file.dto';
 
@@ -34,17 +39,46 @@ export class FileService {
     }
   }
 
-  async deleteFile(id: number) {
+  async deleteFile(id: number, userId: number) {
     try {
+      const file = await this.prisma.file.findUnique({
+        where: { id: id },
+        select: { owner_id: true },
+      });
+
+      if (!file) {
+        throw new NotFoundException('File not found!');
+      }
+
+      if (file.owner_id !== userId) {
+        const access = await this.prisma.access.findUnique({
+          where: {
+            file_id_user_id: {
+              file_id: id,
+              user_id: userId,
+            },
+          },
+          select: { role: true },
+        });
+
+        if (!access || access.role === AccessRole.VIEWER) {
+          throw new UnauthorizedException(
+            'You do not have permission to delete this file.',
+          );
+        }
+      }
+
+      // If owner or editor, proceed with deletion
       const result = await this.prisma.file.delete({ where: { id: id } });
       return `File with filename ${result.filename} has been deleted successfully!`;
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code == 'P2025') {
-          return new NotFoundException('Error deleting file!');
-        }
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new NotFoundException('Error deleting file: File not found.');
       }
-      return 'Something went wrong!';
+      throw error; // Re-throw other errors
     }
   }
 
@@ -54,7 +88,7 @@ export class FileService {
         include: {
           access: {
             select: {
-              access_right: true,
+              role: true, // Changed from access_right to role
               id: true,
               user: {
                 select: { firstname: true, lastname: true, email: true },
@@ -79,7 +113,7 @@ export class FileService {
         include: {
           access: {
             select: {
-              access_right: true,
+              role: true, // Changed from access_right to role
               id: true,
               user: {
                 select: { firstname: true, lastname: true, email: true },
@@ -101,7 +135,7 @@ export class FileService {
         include: {
           access: {
             select: {
-              access_right: true,
+              role: true, // Changed from access_right to role
               id: true,
               user: {
                 select: { firstname: true, lastname: true, email: true },

@@ -41,8 +41,8 @@ export class FileController {
 
   @UseGuards(JwtGuard)
   @Delete('delete/:id')
-  async delete(@Param('id', ParseIntPipe) id: number) {
-    return await this.fileService.deleteFile(id);
+  async delete(@Param('id', ParseIntPipe) id: number, @Request() req) {
+    return await this.fileService.deleteFile(id, req.user.id);
   }
 
   @UseGuards(JwtGuard)

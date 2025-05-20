@@ -1,5 +1,4 @@
-export enum AccessRights {
-  Read = 'read',
-  Write = 'write',
-  Admin = 'admin',
+export enum AccessRole {
+  VIEWER = 'VIEWER',
+  EDITOR = 'EDITOR',
 }
